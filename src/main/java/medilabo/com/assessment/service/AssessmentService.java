@@ -2,16 +2,21 @@ package medilabo.com.assessment.service;
 
 import medilabo.com.assessment.model.PatientAssessmentDTO;
 import medilabo.com.assessment.model.PatientDTO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.Period;
 import java.time.ZoneId;
 import java.util.Date;
 
 @Service
 public class AssessmentService {
+
+    private static Logger logger = LoggerFactory.getLogger(AssessmentService.class);
 
 
     /**
@@ -21,6 +26,7 @@ public class AssessmentService {
      * @return String risk level
      */
     public String riskAssessmentPatientDTO(PatientDTO patient, long score) {
+        logger.info("assessing patient n°"+patient.getIdPatient()+ " with score : "+score);
         return riskAssessment(convertPatientToPatientAssessment(patient, score));
     }
 
@@ -31,10 +37,10 @@ public class AssessmentService {
      * @return String indicating the risk level
      */
     public String riskAssessment(PatientAssessmentDTO patient) {
-        if (enDanger(patient)) {
-            return "In Danger";
-        } else if (apparitionPrecoce(patient)) {
+        if (apparitionPrecoce(patient)) {
             return "Early onset";
+        } else if (enDanger(patient)) {
+            return "In Danger";
         } else if (risqueLimite(patient)) {
             return "Borderline";
         } else {
@@ -95,9 +101,9 @@ public class AssessmentService {
      * @return The calculated age of the patient
      */
     private int calculateAge(PatientAssessmentDTO patient) {
-        Date today = Date.from(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant());
-        return today.compareTo(patient.getDateNaissance());
-
+        LocalDate today = LocalDate.now();
+        LocalDate birthDate = patient.getDateNaissance().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        return Period.between(birthDate, today).getYears();
 
     }
 

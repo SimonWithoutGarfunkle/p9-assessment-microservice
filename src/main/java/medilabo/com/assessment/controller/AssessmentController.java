@@ -1,5 +1,6 @@
 package medilabo.com.assessment.controller;
 
+import medilabo.com.assessment.client.RequestDoctorsMicroservice;
 import medilabo.com.assessment.model.PatientDTO;
 import medilabo.com.assessment.service.AssessmentService;
 import org.slf4j.Logger;
@@ -11,10 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponentsBuilder;
 
-import static medilabo.com.assessment.configuration.Constants.DECLENCHEURS;
-import static medilabo.com.assessment.configuration.URLConfig.URL_DOCTOR;
 import static medilabo.com.assessment.configuration.URLConfig.URL_PATIENT;
 
 /**
@@ -27,6 +25,9 @@ public class AssessmentController {
 
     @Autowired
     private AssessmentService assessmentService;
+
+    @Autowired
+    private RequestDoctorsMicroservice requestDoctorsMicroservice;
 
     @Autowired
     private RestTemplate restTemplate;
@@ -48,27 +49,6 @@ public class AssessmentController {
         return response.getBody();
     }
 
-    /**
-     * Ask Doctor Backend the number of DECLENCHEURS (trigger words) in the history of the patient
-     * @param id of the patient
-     * @return long number of DECLENCHEURS in the history of the patient
-     */
-    public long getAnalyse(Integer id) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-
-        //Add the list of DECLENCHEURS to the request
-        UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(URL_DOCTOR + id + "/analyse");
-        for (String mot : DECLENCHEURS) {
-            builder.queryParam("mots", mot);
-        }
-
-        HttpEntity<?> requestEntity = new HttpEntity<>(headers);
-
-        ResponseEntity<Long> response = restTemplate.exchange(builder.toUriString(), HttpMethod.GET, requestEntity, Long.class);
-
-        return response.getBody();
-    }
 
     /**
      * Assess the risk level of the patient
@@ -79,7 +59,7 @@ public class AssessmentController {
     public String assessPatient(@PathVariable(value = "id") Integer id) {
         logger.debug("Assessing patient n°"+id);
         PatientDTO patient = getPatientDTO(id);
-        long score = getAnalyse(id);
+        long score = requestDoctorsMicroservice.getAnalyse(id);
         logger.info("score received = "+score);
         return assessmentService.riskAssessmentPatientDTO(patient, score);
     }

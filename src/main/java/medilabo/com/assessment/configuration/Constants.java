@@ -4,18 +4,20 @@ import java.util.List;
 
 public class Constants {
 
+    /**
+     * List of words to search for diabetes assessment
+     */
     public static final String[] DECLENCHEURS = {
-            "Anormal",
+            "Anormal", "Anormale","Anormales",
             "Anticorps",
             "Cholestérol",
-            "Fumeur",
-            "Fumeuse",
+            "Fumeur", "Fumeuse", "Fume",
             "Hémoglobine A1C",
             "Microalbumine",
             "Poids",
-            "réaction",
+            "Réaction",
             "Rechute",
             "Taille",
-            "Vertiges"
+            "Vertiges", "Vertige"
     };
 }

@@ -3,6 +3,9 @@ package medilabo.com.assessment.configuration;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+/**
+ * Retrieve URL of other Medilabo microservices from application properties
+ */
 @Component
 public class URLConfig {
 
