@@ -13,6 +13,9 @@ import java.time.Period;
 import java.time.ZoneId;
 import java.util.Date;
 
+/**
+ * Service class for assessing patient risks based on score.
+ */
 @Service
 public class AssessmentService {
 
@@ -58,7 +61,9 @@ public class AssessmentService {
      */
     private boolean risqueLimite(PatientAssessmentDTO patient) {
         long triggerCount = patient.getAssessmentScore();
+        logger.info("score trigger : "+triggerCount);
         int age = calculateAge(patient);
+        logger.info("age patient :"+age);
         return triggerCount >= 2 && triggerCount <= 5 && age > 30;
     }
 
@@ -103,7 +108,8 @@ public class AssessmentService {
     private int calculateAge(PatientAssessmentDTO patient) {
         LocalDate today = LocalDate.now();
         LocalDate birthDate = patient.getDateNaissance().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-        return Period.between(birthDate, today).getYears();
+        int age =Period.between(birthDate, today).getYears();
+        return age;
 
     }
 

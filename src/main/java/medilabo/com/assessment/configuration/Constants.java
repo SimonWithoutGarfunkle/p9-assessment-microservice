@@ -1,7 +1,5 @@
 package medilabo.com.assessment.configuration;
 
-import java.util.List;
-
 public class Constants {
 
     /**
