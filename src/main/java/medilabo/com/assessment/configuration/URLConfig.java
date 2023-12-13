@@ -28,5 +28,4 @@ public class URLConfig {
         URL_DOCTOR = urlDoctor;
     }
 
-
 }
