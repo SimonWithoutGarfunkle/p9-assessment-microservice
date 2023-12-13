@@ -38,9 +38,7 @@ public class RequestDoctorsMicroservice {
         }
 
         HttpEntity<?> requestEntity = new HttpEntity<>(headers);
-
         ResponseEntity<Long> response = restTemplate.exchange(builder.toUriString(), HttpMethod.GET, requestEntity, Long.class);
-
         return response.getBody();
     }
 }
